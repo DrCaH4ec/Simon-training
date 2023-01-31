@@ -1,19 +1,19 @@
 TARGET = Sorting_Array
 CC = gcc
 
-SRC = $(wildcard *.c) 
+SRC = $(shell find . -name '*.c') # $(wildcard *.c) 
 OBJ = $(SRC:.c=.o)
 HDR = $(addprefix -I, $(shell dirname $(shell find . -name "*.h")))
 
 CHEK  = $(echo)
 $(TARGET): $(OBJ)
-	$(CC) $(OBJ) -o $(TARGET)
+	$(CC) -o $(TARGET) $(OBJ)
 
 %.o : %.c
 	$(CC) $(HDR)  -c $< -o $@
 
 c :
-	rm $(TARGET) *.o
+	rm $(TARGET) $(OBJ)
 
 b: 
 	open $(TARGET)
