@@ -3,14 +3,11 @@
 
 #include "sipmle_array.h"
 
-#define LINK_TO_STANDART_OUTPUT_FILE "/Users/simon/DRS_White_man/Simon-training/task_2/Output.txt"
-#define CHOICE_OF_LETTER 'l'
-#define CHOICE_OF_NUMBER 'n'
-
 void Set_array_status(struct charact_array *array, char new_status)
 {
     array->status = new_status;
 }
+
 void Set_array_size(struct charact_array *array, int new_size)
 {
     array->size = new_size;
