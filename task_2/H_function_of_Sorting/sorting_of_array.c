@@ -24,6 +24,7 @@ void Sorting_by_boble(struct charact_array *array)
         }
     }
 }
+
 void Sorting_by_insertion(struct charact_array *array) 
 {
     printf("\n\nSorting_by_insertion --- start\n\n");
@@ -36,6 +37,7 @@ void Sorting_by_insertion(struct charact_array *array)
             array->arr[j+1] = element;
         }
 }
+
 void Sorting_by_selection(struct charact_array *array) 
 {
     printf("\n\nSorting_by_selection --- start\n\n");

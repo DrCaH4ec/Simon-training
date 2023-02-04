@@ -1,6 +1,9 @@
 #ifndef SIMPLE_ARRAY
 #define SIMPLE_ARRAY
 
+#define LINK_TO_STANDART_OUTPUT_FILE "./Output.txt"
+#define CHOICE_OF_LETTER 'l'
+#define CHOICE_OF_NUMBER 'n'
 
 struct charact_array
 {
