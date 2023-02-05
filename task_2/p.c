@@ -6,7 +6,7 @@
 #include "sorting_of_array.h"
 #include "p.h"
 
-char Get_last_char()
+char get_last_char()
 {
     size_t capacity = 20, counter = 0;
     char *str = (char*)calloc(capacity, sizeof(char));
@@ -29,7 +29,7 @@ char Get_last_char()
     return result;
 }
 
-char Set_paramers_of_array()
+char set_param_of_array()
 {
     while (1)
     {
@@ -37,7 +37,7 @@ char Set_paramers_of_array()
 
         printf("You must enter the n - num or l - leteer you array will\n");
         printf("Enter the letter: ");
-        user_entered_leter = Get_last_char();
+        user_entered_leter = get_last_char();
         printf("\n");
         switch (user_entered_leter)
         {
@@ -54,7 +54,7 @@ char Set_paramers_of_array()
     }
 }
 
-void Show_menu_to_set_style_sorting(char *choise_of_sort)
+void show_menu_to_set_sort(char *choise_of_sort)
 {
     int boolean = 1;
 
@@ -63,7 +63,7 @@ void Show_menu_to_set_style_sorting(char *choise_of_sort)
         printf("You can chose the sort");
         printf("\n b - Bubble sort\n i - Insertion sort\n c - Selection sort\n");
         printf("\nEnter your choise_of_sort : ");
-        *choise_of_sort = Get_last_char();
+        *choise_of_sort = get_last_char();
         printf("\n");
         switch (*choise_of_sort)
         {
@@ -87,7 +87,7 @@ void Show_menu_to_set_style_sorting(char *choise_of_sort)
     printf(" - - - - - - - - - - - \n\n");
 }
 
-void  Show_menu_to_set_type_of_filling(char *choise_of_filling)
+void show_menu_to_set_filling(char *choise_of_filling)
 {
     int boolean = 1;
 
@@ -96,7 +96,7 @@ void  Show_menu_to_set_type_of_filling(char *choise_of_filling)
         printf("You can chose the type filling ");
         printf("\n c - Random char\n n - Random num\n R - Read from file\n");
         printf("\nEnter your choise_of_sort : ");
-        *choise_of_filling = Get_last_char();
+        *choise_of_filling = get_last_char();
         printf("\n");
         switch (*choise_of_filling)
         {
@@ -120,7 +120,7 @@ void  Show_menu_to_set_type_of_filling(char *choise_of_filling)
     printf(" - - - - - - - - - - - \n\n");
 }
 
-void  Show_menu_to_set_size_of_array(int *lim)
+void show_menu_to_set_size_of_array(int *lim)
 {
     while (1)
     {
@@ -134,70 +134,71 @@ void  Show_menu_to_set_size_of_array(int *lim)
     printf(" - - - - - - - - - - - \n\n");
 }
 
-void Statrting_dialog_to_set_parametrs(int *lim, char *choise_of_sort, char *choise_of_filling)
+void start_dialog_to_set_param(int *lim, char *choise_of_sort, char *choise_of_filling)
 {
     printf("\n\n\tProgram start\n\n");
-    Show_menu_to_set_style_sorting(choise_of_sort);
-    Show_menu_to_set_type_of_filling(choise_of_filling);
+    show_menu_to_set_sort(choise_of_sort);
+    show_menu_to_set_filling(choise_of_filling);
     if(*choise_of_filling != 'R')
-        Show_menu_to_set_size_of_array(lim);
+        show_menu_to_set_size_of_array(lim);
 }
 
-void Set_memory_to_charact_array_and_arr(struct charact_array *array, int limitation)
+void set_memory_to_array(struct charact_array *array, int limitation)
 {
     array->size = limitation;
     array->arr = malloc(sizeof(int) * limitation);
 }
 
-void Set_new_memory_to_charact_array_and_arr(struct charact_array *array, int limitation)
+void set_new_memory_to_array(struct charact_array *array, int limitation)
 {
     array->size = limitation;
     array->arr = (int*)realloc(array->arr, array->size * sizeof(int));
 }
+
 int main(int argc, char const *argv[])
 {
     char choise_of_sort, choise_of_filling;
     int limitations = 20;
     struct charact_array *array;
 
-    Statrting_dialog_to_set_parametrs(&limitations, &choise_of_sort, &choise_of_filling);
+    start_dialog_to_set_param(&limitations, &choise_of_sort, &choise_of_filling);
     array = malloc(sizeof(struct charact_array));
     switch (choise_of_filling)
     {
     case CHOISE_FILE_TO_FILLING :
-        array->status = Set_paramers_of_array();
-        Filling_by_reading_from_file(array);
+        array->status = set_param_of_array();
+        reading_array_from_file(array);
         break;
     case CHOISE_NUM_TO_FILLING :
-        Set_memory_to_charact_array_and_arr(array, limitations);
-        Filling_random_num(array);
+        set_memory_to_array(array, limitations);
+        filling_random_num(array);
         break;
     case CHOISE_CHAR_TO_FILLING :
-        Set_memory_to_charact_array_and_arr(array, limitations);
-        Filling_random_char(array);
+        set_memory_to_array(array, limitations);
+        filling_random_char(array);
         break;
     default:
         exit(SELECTION_EXCLUSION_FILLING);
         break;
     }
-    Write_array_to_term(array);
+    write_array_to_term(array);
     switch (choise_of_sort)
     {
     case CHOISE_SELECTION_SORT :
-        Sorting_by_selection(array);
+        selection_sort(array);
         break;
     case CHOISE_INSERTION_SORT :
-        Sorting_by_insertion(array);
+        insertion_sort(array);
         break;
     case CHOISE_BOBBLE_SORT :
-        Sorting_by_boble(array);
+        boble_sort(array);
         break;
     default :
         exit(SELECTION_EXCLUSION_SORT);
         break;
     }
-    Write_array_to_term(array);
-    Write_array_to_file(array);
+    write_array_to_term(array);
+    write_array_to_file(array);
 
     free(array->arr);
     free(array);

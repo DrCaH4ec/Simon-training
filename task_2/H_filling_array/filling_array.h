@@ -16,9 +16,9 @@
 #define MIN_SIZE_OF_ARRAY 20
 #define SELECTION_EXCLUSION_FILLING 2
 
-void Filling_random_char(struct charact_array *array);
-void Filling_random_num(struct charact_array *array);
-void Filling_by_reading_from_file(struct charact_array *array);
+void filling_random_char(struct charact_array *array);
+void filling_random_num(struct charact_array *array);
+void reading_array_from_file(struct charact_array *array);
 
 #endif
 
