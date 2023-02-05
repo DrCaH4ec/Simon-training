@@ -1,12 +1,13 @@
 #include <stdlib.h>
 #include <stdio.h>
 #include <time.h>
+#include <math.h>
 
 #include "sipmle_array.h"
 #include "filling_array.h"
 #include "p.h"
 
-int Determine_of_status_char(int letter, char choise_of_filling_array)
+int determine_of_status_char(int letter, char choise_of_filling_array)
 {
     switch (choise_of_filling_array)
     {
@@ -23,36 +24,26 @@ int Determine_of_status_char(int letter, char choise_of_filling_array)
     return 0;
 }
 
-void Filling_random_char(struct charact_array *array)
+void filling_random_char(struct charact_array *array)
 {
     srand(time(NULL));
     for (int i = 0; i < array->size; i++)
         rand() % 2 == 0 ?
             (array->arr[i] = (rand()% CHAR_SIZE) + NUMBER_OF_LOWERCASE_A) : 
             (array->arr[i] = (rand()% CHAR_SIZE) + NUMBER_OF_UPPERCASE_A); 
-    Set_array_status(array, CHOICE_OF_LETTER);
+    set_array_status(array, CHOICE_OF_LETTER);
     
 }
 
-void Filling_random_num(struct charact_array *array)
+void filling_random_num(struct charact_array *array)
 {
     srand(time(NULL));
     for (int i = 0; i < array->size; i++)
         array->arr[i] = (rand()% DIAPASON_OF_VALUE);
-    Set_array_status(array, CHOICE_OF_NUMBER);
+    set_array_status(array, CHOICE_OF_NUMBER);
 }
 
-int Pow_ten(int a)
-{
-    int result = 1;
-    for (int i = 1; i < a; i++)
-    {
-        result*=10;
-    }
-    return result;
-}
-
-void Reading_numbers_from_file(struct charact_array *array, int size_of_mamory, FILE *t_txt)
+void reading_numbers(struct charact_array *array, int size_of_mamory, FILE *t_txt)
 {
     int counter = 0;
     int boolean_taking_number = 0;
@@ -62,9 +53,9 @@ void Reading_numbers_from_file(struct charact_array *array, int size_of_mamory, 
         if(counter == size_of_mamory)
         {
              size_of_mamory *= 2;
-             Set_new_memory_to_charact_array_and_arr(array, size_of_mamory);
+             set_new_memory_to_array(array, size_of_mamory);
         }
-        if(Determine_of_status_char(c, array->status))
+        if(determine_of_status_char(c, array->status))
         {
             array->arr[counter] = c;
             counter++;
@@ -81,7 +72,7 @@ void Reading_numbers_from_file(struct charact_array *array, int size_of_mamory, 
         }
         c = getc(t_txt);
     }
-    Set_new_memory_to_charact_array_and_arr(array, counter);
+    set_new_memory_to_array(array, counter);
     
     int start_position_of_numner = 0;
     int counter_of_numbers = 0;
@@ -92,18 +83,17 @@ void Reading_numbers_from_file(struct charact_array *array, int size_of_mamory, 
             int buf = 0;
             for (int j = start_position_of_numner; j < i ; j++)
             {
-                buf += (array->arr[j] - NUMBER_OF_0) * Pow_ten(i - j);
+                buf += (array->arr[j] - NUMBER_OF_0) * Pow(10,i - j);
             }
             array->arr[counter_of_numbers] = buf;
             start_position_of_numner = i + 1;
             counter_of_numbers++;
         }
     }
-    Set_new_memory_to_charact_array_and_arr(array, counter_of_numbers);
-       
+    set_new_memory_to_array(array, counter_of_numbers);
 }
 
-void Reading_letters_from_file(struct charact_array *array, int size_of_mamory, FILE *t_txt)
+void reading_letters(struct charact_array *array, int size_of_mamory, FILE *t_txt)
 {
     char c;
     int counter = 0;
@@ -113,32 +103,32 @@ void Reading_letters_from_file(struct charact_array *array, int size_of_mamory, 
         if (counter == size_of_mamory)
         {
             size_of_mamory *= 2;
-            Set_new_memory_to_charact_array_and_arr(array, size_of_mamory);
+            set_new_memory_to_array(array, size_of_mamory);
         }
-        if (Determine_of_status_char(c, array->status))
+        if (determine_of_status_char(c, array->status))
         {
            array->arr[counter] = c;
             counter++;
         }
         c = fgetc(t_txt);
     }
-    Set_new_memory_to_charact_array_and_arr(array, counter);
+    set_new_memory_to_array(array, counter);
 }
 
-void Filling_by_reading_from_file(struct charact_array *array)
+void reading_array_from_file(struct charact_array *array)
 {
     
     FILE *t_txt = fopen(LINK_TO_STANDART_INPUT_FILE, "r");
     int size_of_mamory = MIN_SIZE_OF_ARRAY;
 
-    Set_memory_to_charact_array_and_arr(array, size_of_mamory);
+    set_memory_to_array(array, size_of_mamory);
     switch (array->status)
     {
     case CHOICE_OF_LETTER:
-        Reading_letters_from_file(array,size_of_mamory, t_txt);
+        reading_letters(array,size_of_mamory, t_txt);
         break;
     case CHOICE_OF_NUMBER:
-        Reading_numbers_from_file(array,size_of_mamory, t_txt);
+        reading_numbers(array,size_of_mamory, t_txt);
         break;
     default:
         exit(SELECTION_EXCLUSION_FILLING);
@@ -147,7 +137,3 @@ void Filling_by_reading_from_file(struct charact_array *array)
 
     fclose(t_txt);
 }
-
-
-
-

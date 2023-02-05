@@ -12,12 +12,10 @@ struct charact_array
     char status;
 };
 
-
-void Set_array_status(struct charact_array *array, char new_status);
-void Set_array_size(struct charact_array *array, int new_size);
-void Write_array_to_term(struct charact_array *array);
-void Write_array_to_file(struct charact_array *array);
-
+void set_array_status(struct charact_array *array, char new_status);
+void set_array_size(struct charact_array *array, int new_size);
+void write_array_to_term(struct charact_array *array);
+void write_array_to_file(struct charact_array *array);
 
 #endif
 

@@ -38,7 +38,7 @@ Array now is :
 V a x j M e s m B B U P f d k o E v u Z W A O K y J b M i R y x H t b V V c o I A C B k Y H n J g t 
 
 
-Sorting_by_boble --- start
+boble_sort --- start
 
 Array now is :
 A A B B B C E H H I J J K M M O P R U V V V W Y Z a b b c d e f g i j k k m n o o s t t u v x x y y
@@ -90,7 +90,7 @@ Array now is :
 81 29 44 2 86 67 51 86 21 2 63 76 28 94 1 57 22 46 76 33 
 
 
-Sorting_by_insertion --- start
+insertion_sort --- start
 
 Array now is :
 1 2 2 21 22 28 29 33 44 46 51 57 63 67 76 76 81 86 86 94 
@@ -144,7 +144,7 @@ Array now is :
 d c b a z 
 
 
-Sorting_by_boble --- start
+boble_sort --- start
 
 Array now is :
 a b c d z 
@@ -193,7 +193,7 @@ Array now is :
 1 1 2 2 3 3 
 
 
-Sorting_by_boble --- start
+boble_sort --- start
 
 Array now is :
 1 1 2 2 3 3 
