@@ -5,11 +5,11 @@
 
 #include <usart.h>
 
-#define TEXT "!!!!!\n\r"
+#define TEXT "Hello World!\n\r"
 
 int main(void)
 {
-    usart_init(103,5);
+    usart_init(9600,8);
 
     _delay_ms(1);
 
