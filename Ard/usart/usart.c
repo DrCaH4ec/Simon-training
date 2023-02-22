@@ -30,25 +30,25 @@ void usart_set_packet_size(const uint8_t packet_size)
         SBI(UCSR0B, UCSZ02); // Set paket size 9 bit.
         break;
     case 7:
-        //CBI(UCSR0C, UCSZ00);
+        CBI(UCSR0C, UCSZ00);
         SBI(UCSR0C, UCSZ01);
-        //CBI(UCSR0B, UCSZ02); // Set paket size 7 bit.
+        CBI(UCSR0B, UCSZ02); // Set paket size 7 bit.
         break;
     case 6:
         SBI(UCSR0C, UCSZ00);
-        //CBI(UCSR0C, UCSZ01);
-        //CBI(UCSR0B, UCSZ02); // Set paket size 6 bit.
+        CBI(UCSR0C, UCSZ01);
+        CBI(UCSR0B, UCSZ02); // Set paket size 6 bit.
         break;
     case 5:
-        //CBI(UCSR0C, UCSZ00);
-        //CBI(UCSR0C, UCSZ01);
-        //CBI(UCSR0B, UCSZ02); // Set paket size 5 bit.
+        CBI(UCSR0C, UCSZ00);
+        CBI(UCSR0C, UCSZ01);
+        CBI(UCSR0B, UCSZ02); // Set paket size 5 bit.
         break;
     case 8:
     default:
         SBI(UCSR0C, UCSZ00);
         SBI(UCSR0C, UCSZ01);
-        //CBI(UCSR0B, UCSZ02); // Set paket size 8 bit.
+        CBI(UCSR0B, UCSZ02); // Set paket size 8 bit.
         break;
     } 
     // Set size of packet.
