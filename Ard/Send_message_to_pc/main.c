@@ -5,7 +5,7 @@
 
 #include <usart.h>
 
-#define TEXT "Hello World!\n\r"
+#define TEXT "->Hellow WORLD!!<-\n\r"
 
 int main(void)
 {
