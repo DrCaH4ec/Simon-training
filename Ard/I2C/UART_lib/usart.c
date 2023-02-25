@@ -1,7 +1,3 @@
-#include <avr/io.h>
-
-#include <stdint.h>
-#include <math.h>
 #include <usart.h>
 
 void usart_set_baud_rate(const unsigned int bps)
@@ -62,7 +58,7 @@ void usart_init(const unsigned int bps, const uint8_t packet_size)
     // Set resources of uart.
 }
 
-static void usart_send_byte(const char data)
+void usart_send_byte(const char data)
 {
     /* Wait for empty transmit buffer */
     while ( !( UCSR0A & (1<<UDRE0)) );
@@ -75,3 +71,24 @@ void usart_send_data(const char *data, uint16_t size)
     for (uint16_t i = 0; i < size; i++)
         usart_send_byte(data[i]);
 }
+
+void usart_send_data_str(const char *srt)
+{
+    for (uint16_t i = 0; i < strlen(srt); i++)
+        usart_send_byte(srt[i]);
+}
+
+void usart_send_data_by_nums(const uint8_t data)
+{
+    usart_send_byte(48);
+    usart_send_byte(98);
+    for (int i = 7; i >= 0; i--){
+        if (data & 1<<i)
+            usart_send_byte(49);
+        else 
+            usart_send_byte(48);
+    }
+    usart_send_byte('\n');
+    usart_send_byte('\r');
+}
+
