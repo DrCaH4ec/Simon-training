@@ -95,6 +95,18 @@ static void set_prescaler_val(uint8_t presc_val)
     }
 }
 
+static void iic_MTM_set_write_con(void)
+{
+    SBI(TWCR, TWINT); //status bit 
+    CBI(TWCR, TWEA);
+    CBI(TWCR, TWSTA); //status bit
+    CBI(TWCR, TWSTO); //status bit
+    CBI(TWCR, TWWC);
+    SBI(TWCR, TWEN); //status bit 
+    CBI(TWCR, TWIE); 
+    while (!(TWCR & (1<<TWINT)));//wait to set con
+}
+
 uint8_t get_prescaler_val(void)
 {
     return CAL_SETED_PV;
@@ -105,9 +117,10 @@ uint8_t get_TWBR_val(void)
     return TWBR;
 }
 
-void iic_set_SLC_freq(uint32_t freq_SLC) //const unsigned long SLC_freq
+void iic_init(uint32_t freq_SLC) 
 {
     uint32_t tem = 0;
+
     set_prescaler_val(1);
     for (uint8_t i = 0; i < 4; i++){
         tem = CAL_TWBR_VAL(freq_SLC, get_prescaler_val());
@@ -132,18 +145,6 @@ void iic_set_start_con(void)
     while (!(TWCR & (1<<TWINT))); //Wait to set con
 }
 
-void static iic_MTM_set_write_con(void)
-{
-    SBI(TWCR, TWINT); //status bit 
-    CBI(TWCR, TWEA);
-    CBI(TWCR, TWSTA); //status bit
-    CBI(TWCR, TWSTO); //status bit
-    CBI(TWCR, TWWC);
-    SBI(TWCR, TWEN); //status bit 
-    CBI(TWCR, TWIE); 
-    while (!(TWCR & (1<<TWINT)));//wait to set con
-}
-
 uint8_t iic_read_data(void)
 {
     SBI(TWCR, TWINT);
@@ -152,8 +153,7 @@ uint8_t iic_read_data(void)
     CBI(TWCR, TWSTO);
     CBI(TWCR, TWWC);
     SBI(TWCR, TWEN); 
-    CBI(TWCR, TWIE);
-    //configuration to read current data
+    CBI(TWCR, TWIE); //configuration to read current data
     while (!(TWCR & (1<<TWINT)));
     return TWDR;
 }
@@ -166,8 +166,7 @@ uint8_t iic_read_data_last(void)
     CBI(TWCR, TWSTO);
     CBI(TWCR, TWWC);
     SBI(TWCR, TWEN); 
-    CBI(TWCR, TWIE);
-    //configuration to read last data
+    CBI(TWCR, TWIE); //configuration to read last data
     while (!(TWCR & (1<<TWINT)));
     return TWDR;
 }
@@ -180,8 +179,7 @@ void iic_set_stop_con(void)
     SBI(TWCR, TWSTO);
     CBI(TWCR, TWWC);
     SBI(TWCR, TWEN); 
-    CBI(TWCR, TWIE); 
-    //Configuration to STOP
+    CBI(TWCR, TWIE); //Configuration to STOP
     while (!(TWCR & (1<<TWINT))); //Wait to set con
 }
 
@@ -196,17 +194,16 @@ void iic_send_data(uint8_t data)
 {
     TWDR = data; // save data in the memory
     iic_MTM_set_write_con();
-
 }
 
-void iic_write_to_slave(uint8_t slave, uint8_t *array, uint8_t size, uint8_t address_memory)
+void iic_write_to_slave(uint8_t slave_address, uint8_t *array, uint8_t size, uint8_t memory_address)
 {
     #ifndef TEST_TWCR_CON
     iic_set_start_con(); 
     
-    iic_send_SLA_Wbit(slave, WRITE_BIT_ON); //Send SLA+W
+    iic_send_SLA_Wbit(slave_address, WRITE_BIT_ON); //Send SLA+W
 
-    iic_send_data(address_memory); //Send slave memory address 
+    iic_send_data(memory_address); //Send slave memory address 
 
     for (uint16_t i = 0; i < size; i++)
         iic_send_data(array[i]); //Send data IIC 
@@ -218,7 +215,7 @@ void iic_write_to_slave(uint8_t slave, uint8_t *array, uint8_t size, uint8_t add
     iic_set_start_con(); //IIC set startn con
     show_TWSR_con();
     
-    iic_send_SLA_Wbit(slave, WRITE_BIT_ON); //Send address of slave IIC
+    iic_send_SLA_Wbit(slave_address, WRITE_BIT_ON); //Send address of slave IIC
     show_TWSR_con(); //Checkout condition 
     
     iic_send_data(0); //Send memory address 
@@ -234,21 +231,17 @@ void iic_write_to_slave(uint8_t slave, uint8_t *array, uint8_t size, uint8_t add
     #endif
 }
 
-void iic_read_from_slave(uint8_t slave, uint8_t *array, uint8_t size, uint8_t address_memory)
+void iic_read_from_slave(uint8_t slave_address, uint8_t *array, uint8_t size, uint8_t memory_address)
 {
     #ifndef TEST_TWCR_CON
-    iic_set_start_con(); 
 
-    iic_send_SLA_Wbit(slave, WRITE_BIT_ON); //Send SLA+W
-    
-    iic_send_data(address_memory); //Send slave memory address 
-
-    iic_set_stop_con();
-    ///////////////////////////////////
+    /*Send  adres of memory*/
+    iic_write_to_slave(slave_address, NULL, LES_DATA, memory_address);
+    /*Send  adres of memory*/
 
     iic_set_start_con();
 
-    iic_send_SLA_Wbit(slave, READ_BIT_ON); //Send SLA+R 
+    iic_send_SLA_Wbit(slave_address, READ_BIT_ON); //Send SLA+R 
 
     for (uint8_t i = 0; i < size - 1; i++)
         array[i] = iic_read_data(); //Read data from memory
@@ -259,24 +252,14 @@ void iic_read_from_slave(uint8_t slave, uint8_t *array, uint8_t size, uint8_t ad
     #endif
 
     #ifdef TEST_TWCR_CON
-    iic_set_start_con();
-    show_TWSR_con(); //Checkout condition 
-
-    iic_send_SLA_Wbit(slave, WRITE_BIT_ON); //Send address of slave IIC
-    show_TWSR_con(); //Checkout condition 
-    
-    iic_send_data(address_memory); //Send memory address 
-    show_TWSR_con(); //Checkout condition 
-
-    iic_set_stop_con(); //IIC set stop con
-    show_TWSR_con(); //Checkout condition 
+    iic_write_to_slave(slave_address, NULL, LES_DATA, memory_address);
 
     usart_send_data(G,strlen(G));
 
     iic_set_start_con(); //IIC set startn con
     show_TWSR_con(); //Checkout condition 
 
-    iic_send_SLA_Wbit(slave, READ_BIT_ON); // send SLA+W
+    iic_send_SLA_Wbit(slave_address, READ_BIT_ON); // send SLA+W
     show_TWSR_con(); //Checkout condition 
 
     for (uint8_t i = 0; i < size - 1; i++){
@@ -290,5 +273,25 @@ void iic_read_from_slave(uint8_t slave, uint8_t *array, uint8_t size, uint8_t ad
     iic_set_stop_con(); //IIC set stop con
     show_TWSR_con(); //Checkout condition 
     #endif
+}
 
+uint8_t *iic_find_all_devices(uint8_t *slave_adresses)
+{
+    uint8_t counter = 0;
+    slave_adresses = malloc(sizeof(uint8_t) * MAX_ADDRESS);
+
+    for (uint8_t i = 0; i < MAX_ADDRESS; i++)
+        slave_adresses[i] = 0b11111111;
+
+    for(uint8_t i = 0; i < MAX_ADDRESS; i++){
+        iic_set_start_con(); 
+    
+        iic_send_SLA_Wbit(i, WRITE_BIT_ON); //Send SLA+W 
+
+        if (TWSR == 0x18)
+            slave_adresses[counter++] = i;
+
+        iic_set_stop_con();
+    }
+    return slave_adresses;
 }

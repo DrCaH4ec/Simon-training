@@ -91,4 +91,3 @@ void usart_send_data_by_nums(const uint8_t data)
     usart_send_byte('\n');
     usart_send_byte('\r');
 }
-
